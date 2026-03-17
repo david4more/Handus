@@ -10,20 +10,25 @@ public class Player
     private Vector2f velocity;
     private float scale = 0.3f;
 
-    public Player(Dictionary<string, Texture> textures, Vector2f spawnPoint)
+    public void Update()
+    {
+        // some physics calculations
+    }
+    
+    public Player(Dictionary<string, Texture> textures, Vector2f spawnPoint)    // initializes player with a map of textures
     {
         this.textures = textures;
         sprite = new Sprite(textures["idle1"]);
         sprite.Scale = new Vector2f(scale, scale);
         
-        setPosition(spawnPoint);
+        SetPosition(spawnPoint);
     }
-
-    void setPosition(Vector2f position)
+    
+    void SetPosition(Vector2f position) // sets player's middle bottom to passed coords
     {
         var size = sprite.TextureRect.Size;
         size = new Vector2i((int)(size.X * scale), (int)(size.Y * scale));
         sprite.Position = new Vector2f(position.X - size.X / 2.0f, position.Y - size.Y);
     }
-    public Sprite getSprite() => sprite;
+    public Sprite GetSprite() => sprite;
 }

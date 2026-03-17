@@ -4,7 +4,7 @@ namespace Handus;
 
 using SFML.Graphics;
 
-public abstract class Level
+public abstract class Level // abstract class for all levels
 {
     protected List<Texture> textures = new();
     protected List<Sprite> sprites = new();
@@ -17,7 +17,8 @@ public abstract class Level
     {
         this.dimensions = dimensions;
     }
-    public List<Sprite> getSprites() => sprites;
-    public Vector2f getSpawnPoint() => spawnPoint;
-    public Sprite getBackground() => background;
+    public List<Sprite> GetSprites() => sprites;
+    public Vector2f GetSpawnPoint() => spawnPoint;
+    public Sprite GetBackground() => background;
+    public void Update() { }
 }

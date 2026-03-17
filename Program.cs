@@ -5,4 +5,4 @@ using SFML.Window;
 
 RenderWindow window = new RenderWindow(new VideoMode(new Vector2u(1920, 1080)), "Handus", Styles.Default, State.Fullscreen);
 Engine engine = new(window);
-engine.loop();
+engine.Loop();

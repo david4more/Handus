@@ -8,7 +8,7 @@ public class Engine
     private Level level;
     private Dictionary<string, Texture> textures = new();
 
-    public Engine(RenderWindow window)
+    public Engine(RenderWindow window)  // initializes engine, creates player and level
     {
         this.window = window;
 
@@ -17,29 +17,31 @@ public class Engine
         var texture = new Texture("Files/player.jpg");
         textures.Add("idle1", texture);
 
-        player = new Player(textures, level.getSpawnPoint());
+        player = new Player(textures, level.GetSpawnPoint());
     }
     
-    void update()
+    void Update()
     {
         window.DispatchEvents();
         window.Closed += (sender, e) => window.Close();
+        player.Update();
+        level.Update();
     }
 
-    void render()
+    void Render()   // draws all sprites
     {
         window.Clear();
-        foreach (var s in level.getSprites()) window.Draw(s);
-        window.Draw(player.getSprite());
+        foreach (var s in level.GetSprites()) window.Draw(s);
+        window.Draw(player.GetSprite());
         window.Display();
     }
     
-    public void loop()
+    public void Loop()  // launches the game's loop
     {
-        while (window.IsOpen)
+        while (window.IsOpen)   // TODO: delta time
         {
-            update();
-            render();
+            Update();
+            Render();
         }
     }
 }
