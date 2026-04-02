@@ -21,18 +21,21 @@ public class Engine
         textures.Add("idle1", texture);
         player = new Player(textures, level.GetSpawnPoint());
         
-        window.Closed += (sender, e) => window.Close();
+        window.SetKeyRepeatEnabled(false);
         
+        window.Closed += (sender, e) => window.Close();
+        window.KeyPressed += player.OnKeyPressed;
+        window.KeyPressed += (sender, e) => { if (e.Code == Keyboard.Key.Escape) window.Close(); };
     }
     
     void Update(float dt)
     {
         window.DispatchEvents();
-        if (Keyboard.IsKeyPressed(Keyboard.Key.Escape)) window.Close();
 
-        UpdateCollisions();
         player.Update(dt);
         level.Update(dt);
+        
+        UpdateCollisions();
     }
 
     void UpdateCollisions()
@@ -57,16 +60,16 @@ public class Engine
             if (overlapX < overlapY)
             {
                 if (p.Left < h.Left)
-                    player.Collide(Direction.Right);
+                    player.Collide(Direction.Right, overlapX);
                 else
-                    player.Collide(Direction.Left);
+                    player.Collide(Direction.Left, overlapX);
             }
             else
             {
                 if (p.Top < h.Top)
-                    player.Collide(Direction.Down);
+                    player.Collide(Direction.Down, overlapY);
                 else
-                    player.Collide(Direction.Up);
+                    player.Collide(Direction.Up, overlapY);
             }
         }
     }

@@ -22,4 +22,12 @@ public abstract class Level // abstract class for all levels
     public Vector2f GetSpawnPoint() => spawnPoint;
     public Sprite GetBackground() => background;
     public void Update(float dt) { }
+
+    protected void GenerateHitbox(Sprite sprite, Vector2f scale)
+    {
+        var hitbox = new IntRect();
+        hitbox.Size = new Vector2i((int)(sprite.TextureRect.Size.X * scale.X), (int)(sprite.TextureRect.Size.Y * scale.Y));
+        hitbox.Position = (Vector2i)sprite.Position;
+        hitboxes.Add(hitbox);
+    }
 }
