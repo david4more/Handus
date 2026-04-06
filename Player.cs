@@ -114,4 +114,27 @@ public class Player
     }
     public Sprite GetSprite() => Sprite;
     public IntRect GetHitbox() => Hitbox;
+    public float PositionX
+    {
+        get => Sprite.Position.X;
+        set
+        {
+            var pos = Sprite.Position;
+            pos.X = value;
+            Sprite.Position = pos;
+            Hitbox.Position = (Vector2i)Sprite.Position;
+        }
+    }
+
+    public float PositionY
+    {
+        get => Sprite.Position.Y;
+        set
+        {
+            var pos = Sprite.Position;
+            pos.Y = value;
+            Sprite.Position = pos;
+            Hitbox.Position = (Vector2i)Sprite.Position;
+        }
+    }
 }

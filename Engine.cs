@@ -7,7 +7,7 @@ using SFML.Graphics;
 public class Engine
 {
     private RenderWindow window;
-    private Player player;
+    public Player player;
     private Level level;
     private Dictionary<string, Texture> textures = new();
 
