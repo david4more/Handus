@@ -6,6 +6,7 @@ using System.Net.Http.Json;
 
 var client = new HttpClient();
 User? user = null;
+bool newUser = false;
 
 // цикл для реєстрації входу/користувача
 while (user == null)
@@ -26,6 +27,8 @@ while (user == null)
         if (answer.ToLower() == "y")
         {
             user = await CreateNewUser();
+            newUser = true;
+
         }
         else
         {
@@ -61,8 +64,11 @@ async Task<User?> CreateNewUser()
 RenderWindow window = new RenderWindow(new VideoMode(new Vector2u(1920, 1080)), "Handus", Styles.Default, State.Fullscreen);
 Engine engine = new(window);
 //встановлення позиції гравця
-engine.player.PositionX = user.PositionX;
-engine.player.PositionY = user.PositionY;
+if (!newUser)
+{
+    engine.player.PositionX = user.PositionX;
+    engine.player.PositionY = user.PositionY;
+}
 
 engine.Loop();
 
@@ -76,6 +82,6 @@ public class User
 {
     public int Id { get; set; }
     public string Name { get; set; } = null!;
-    public float PositionX { get; set; } = 0;
-    public float PositionY { get; set; } = 0;
+    public float PositionX { get; set; }
+    public float PositionY { get; set; }
 }
