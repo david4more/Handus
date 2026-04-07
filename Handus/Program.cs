@@ -16,7 +16,7 @@ while (user == null)
 
     try
     {
-        user = await client.GetFromJsonAsync<User>($"https://localhost:7220/users/byname/{usernameInput}");
+        user = await client.GetFromJsonAsync<User>($"http://localhost:5275/users/byname/{usernameInput}");
     }
     catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
     {
@@ -45,7 +45,7 @@ async Task<User?> CreateNewUser()
     Console.WriteLine("Enter new username:");
     string newUsername = Console.ReadLine() ?? "Unnamed";
 
-    var response = await client.PostAsJsonAsync("https://localhost:7220/users", new { name = newUsername });
+    var response = await client.PostAsJsonAsync("http://localhost:5275/users", new { name = newUsername });
 
     if (response.IsSuccessStatusCode)
     {
@@ -76,7 +76,7 @@ engine.Loop();
 user.PositionX = engine.player.PositionX;
 user.PositionY = engine.player.PositionY;
 
-await client.PutAsJsonAsync($"https://localhost:7220/users/{user.Id}", user);
+await client.PutAsJsonAsync($"http://localhost:7275/users/{user.Id}", user);
 
 public class User
 {
