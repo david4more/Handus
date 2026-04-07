@@ -76,7 +76,7 @@ engine.Loop();
 user.PositionX = engine.player.PositionX;
 user.PositionY = engine.player.PositionY;
 
-await client.PutAsJsonAsync($"http://localhost:7275/users/{user.Id}", user);
+await client.PutAsJsonAsync($"http://localhost:5275/users/{user.Id}", user);
 
 public class User
 {
