@@ -1,5 +1,4 @@
-﻿using System.Numerics;
-using SFML.Window;
+﻿using SFML.Window;
 
 namespace Handus;
 

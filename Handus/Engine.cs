@@ -17,7 +17,7 @@ public class Engine
 
         level = new Level1(window.Size);
         
-        var texture = new Texture("Files/player.jpg");
+        var texture = new Texture(Utils.FilePrefix + "player.jpg");
         textures.Add("idle1", texture);
         player = new Player(textures, level.GetSpawnPoint());
         
@@ -95,6 +95,11 @@ public class Engine
             Render();
         }
     }
+}
+
+public class Utils
+{
+    public static string FilePrefix => "../../../Files/"; 
 }
 
 public enum Direction

@@ -6,7 +6,7 @@ public class Level1 : Level
 {
     public Level1(Vector2u dimensions) : base(dimensions)   // initializes level with textures and sprites
     {
-        textures.Add(new Texture("Files/ground.png"));
+        textures.Add(new Texture(Utils.FilePrefix + "ground.png"));
         var size = new Vector2i(1920, 1080);
 
         var width = (float)textures[0].Size.X;
