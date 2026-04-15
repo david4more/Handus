@@ -1,9 +1,7 @@
 ﻿using SFML.Window;
-
-namespace Handus;
-
 using SFML.System;
 using SFML.Graphics;
+namespace Handus;
 
 public class Player
 {

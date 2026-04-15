@@ -1,9 +1,8 @@
 ﻿using SFML.System;
 using SFML.Window;
-
 namespace Handus;
-
 using SFML.Graphics;
+
 public class Engine
 {
     private RenderWindow window;
