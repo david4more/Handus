@@ -1,10 +1,15 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using System.Net.WebSockets;
+using System.Text;
+using System.Text.Json;
 namespace Handus
 {
     public class UserService
     {
         private readonly HttpClient client;
+        private ClientWebSocket? ws;
+        private string? token;
 
         public UserService()
         {
@@ -12,6 +17,25 @@ namespace Handus
             client.BaseAddress = new Uri("http://localhost:5275/");
         }
 
+        public async Task<bool> Login(string username)
+        {
+            var response = await client.PostAsync($"login?username={username}", null);
+            if (!response.IsSuccessStatusCode)
+            {
+                return false;
+            }
+            var data = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
+            token = data?["token"];
+
+            await ConnectWebSocket();
+            return true;
+        }
+        private async Task ConnectWebSocket()
+        {
+            ws = new ClientWebSocket();
+            Uri uri = new Uri($"ws://localhost:5275/ws?token={token}");
+            await ws.ConnectAsync(uri, CancellationToken.None);
+        }
         public async Task<User?> GetUser(string username)
         {
             try
@@ -26,7 +50,7 @@ namespace Handus
 
         public async Task<User?> CreateUser(string username)
         {
-            var response = await client.PostAsJsonAsync("users", new { name = username });
+            var response = await client.PostAsJsonAsync($"users", new { name = username });
 
             if (!response.IsSuccessStatusCode)
                 return null;
@@ -34,9 +58,14 @@ namespace Handus
             return await response.Content.ReadFromJsonAsync<User>();
         }
 
-        public async Task SaveUser(User user)
+        public async Task SendPosition(float x, float y)
         {
-            await client.PutAsJsonAsync($"users/{user.Id}", user);
+            if (ws?.State == WebSocketState.Open)
+            {
+                var msg = JsonSerializer.Serialize(new { x, y });
+                var bytes = Encoding.UTF8.GetBytes(msg);
+                await ws.SendAsync(new ArraySegment<byte>(bytes), WebSocketMessageType.Text, true, CancellationToken.None);
+            }
         }
     }
 }

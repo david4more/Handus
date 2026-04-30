@@ -10,7 +10,7 @@ public abstract class Level // abstract class for all levels
     protected List<Sprite> sprites = new();
     protected List<IntRect> hitboxes = new();
     protected Sprite background;
-    protected Vector2f spawnPoint;
+    public Vector2f spawnPoint { get; protected set; }
     protected Vector2u dimensions;
 
     public Level(Vector2u dimensions)

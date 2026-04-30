@@ -7,7 +7,7 @@ public class Engine
 {
     private RenderWindow window;
     public Player player;
-    private Level level;
+    public Level level { get; private set; }
     private Dictionary<string, Texture> textures = new();
 
     public Engine(RenderWindow window)  // initializes engine, creates player and level

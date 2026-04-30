@@ -37,13 +37,17 @@
                 }
             }
 
+            bool loggedIn = await userService.Login(user.Name);
+            if (!loggedIn)
+            {
+                view.ShowMessage("Login failed!");
+                return;
+            }
             view.ShowMessage($"Welcome, {user.Name}!");
 
-            // запуск гри
             view.StartGame(user);
 
-            // збереження після гри
-            await userService.SaveUser(user);
+            await userService.SendPosition(user.PositionX, user.PositionY);
         }
     }
 }

@@ -32,13 +32,19 @@ public class ConsoleView : IGameView
 
         Engine engine = new(window);
 
-        // якщо користувач існує — відновлюємо позицію
-        engine.player.PositionX = user.PositionX;
-        engine.player.PositionY = user.PositionY;
+        if (user.PositionX == 0 && user.PositionY == 0)
+        {
+            engine.player.PositionX = engine.level.spawnPoint.X;
+            engine.player.PositionY = engine.level.spawnPoint.Y;
+        }
+        else
+        {
+            engine.player.PositionX = user.PositionX;
+            engine.player.PositionY = user.PositionY;
+        }
 
         engine.Loop();
 
-        // після гри — оновлюємо координати
         user.PositionX = engine.player.PositionX;
         user.PositionY = engine.player.PositionY;
     }
