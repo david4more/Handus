@@ -48,9 +48,9 @@ namespace Handus
             }
         }
 
-        public async Task<User?> CreateUser(string username)
+        public async Task<User?> CreateUser(string username, string email, string password)
         {
-            var response = await client.PostAsJsonAsync($"users", new { name = username });
+            var response = await client.PostAsJsonAsync($"users", new { name = username, email = email, password = password });
 
             if (!response.IsSuccessStatusCode)
                 return null;

@@ -7,19 +7,36 @@ public class ConsoleView : IGameView
 {
     public string GetUsername()
     {
-        Console.WriteLine("Enter your username:");
+        Console.WriteLine("Enter username:");
         return Console.ReadLine() ?? "";
     }
-
+    public string GetPassword()
+    {
+        Console.WriteLine("Enter password:");
+        return Console.ReadLine() ?? "";
+    }
+    public string GetSecondPassword()
+    {
+        Console.WriteLine("Repeat password:");
+        return Console.ReadLine() ?? "";
+    }
+    public string GetEmail()
+    {
+        Console.WriteLine("Enter email:");
+        return Console.ReadLine() ?? "";
+    }
+    public string MenuChoice()
+    {
+        string choice = null!;
+        while (choice != "1" && choice != "2") {
+            Console.WriteLine("What do you want to do?\n1 - login\n2 - register");
+            choice = Console.ReadLine() ?? "";
+        }
+        return choice;
+        }
     public void ShowMessage(string message)
     {
         Console.WriteLine(message);
-    }
-
-    public string AskYesNo(string message)
-    {
-        Console.WriteLine(message);
-        return Console.ReadLine()?.ToLower() ?? "n";
     }
 
     public void StartGame(User user)

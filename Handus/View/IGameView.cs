@@ -2,8 +2,11 @@
 
 public interface IGameView
 {
+    string MenuChoice();
     string GetUsername();
+    string GetPassword();
+    string GetSecondPassword();
+    string GetEmail();
     void ShowMessage(string message);
-    string AskYesNo(string message);
     void StartGame(User user);
 }
