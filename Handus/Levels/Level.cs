@@ -21,11 +21,14 @@ public abstract class Level // abstract class for all levels
     {
         this.dimensions = dimensions;
 
-        // Platform textures
+        // Platform textures lvl1
+        //Ground
         textures.Add(new Texture(Utils.FilePrefix + "Sprite-poll.png", 
-            new IntRect(new Vector2i(0, 0), new Vector2i(35, 32)))); // idx 0
-        textures.Add(new Texture(Utils.FilePrefix + "Island.png")); // idx 1
-        // Objects textures 
+            new IntRect(new Vector2i(0, 13), new Vector2i(35, 32)))); // idx 0
+        // Island
+        textures.Add(new Texture(Utils.FilePrefix + "Island.png"));// idx 1
+
+        // Objects textures lvl1
         textures.Add(new Texture(Utils.FilePrefix + "box.png"));     // idx 2
         textures.Add(new Texture(Utils.FilePrefix + "button.png"));  // idx 3
         textures.Add(new Texture(Utils.FilePrefix + "lever.png"));   // idx 4
@@ -33,6 +36,18 @@ public abstract class Level // abstract class for all levels
         textures.Add(new Texture(Utils.FilePrefix + "heart.png"));   // idx 6
         textures.Add(new Texture(Utils.FilePrefix + "killzone.png")); // idx 7
         textures.Add(new Texture(Utils.FilePrefix + "trampoline.png")); // idx 8
+
+        // Platform textures lvl2
+        // Island
+        
+        // Objects textures lvl2
+
+        // Platform textures lvl3
+        //Ground
+        textures.Add(new Texture(Utils.FilePrefix + "Sprite-poll.png",
+            new IntRect(new Vector2i(96, 13), new Vector2i(35, 32))));// idx ?
+        // Island
+        // Objects textures lvl3
     }
 
     public List<Sprite> GetSprites() => sprites;

@@ -13,11 +13,16 @@ public class Level2 : Level
         int tilesCount = (int)Math.Ceiling(dimensions.X / tileWidth);
         Vector2f groundScale = new Vector2f(0.5f, 0.5f);
 
+        float baseWidth = 2560f;
+        float baseHeight = 1440f;
+        float scaleX = dimensions.X / baseWidth;
+        float scaleY = dimensions.Y / baseHeight;
+
         // Platform 1 (Right, down)
         AddPlatform(
           textures[1],
               new Vector2f(0f, dimensions.Y * 0.55f), //position
-              new Vector2f(0.4f, 0.5f), //size of one tile
+              new Vector2f(0.4f * scaleX, 0.5f * scaleY), //size of one tile
               dimensions.X * 0.30f //total width of platform
         );
 
@@ -25,7 +30,7 @@ public class Level2 : Level
         AddPlatform(
          textures[1],
              new Vector2f(0f, dimensions.Y * 0.32f), 
-             new Vector2f(0.4f, 0.5f), 
+             new Vector2f(0.4f * scaleX, 0.5f * scaleY), 
              dimensions.X * 0.15f
        );
 
@@ -33,7 +38,7 @@ public class Level2 : Level
         AddPlatform(
           textures[1],
               new Vector2f(dimensions.X * 0.68f, dimensions.Y * 0.55f), //position
-              new Vector2f(0.4f, 0.5f), 
+              new Vector2f(0.4f * scaleX, 0.5f * scaleY), 
               dimensions.X * 0.35f 
         );
 
@@ -42,7 +47,7 @@ public class Level2 : Level
             "l2_kz1",
             textures[7],
             new Vector2f(0f, dimensions.Y - 40f),
-            new Vector2f(0.5f, 0.5f),
+            new Vector2f(0.5f * scaleX, 0.5f * scaleY),
             dimensions.X
         );
 
@@ -53,7 +58,7 @@ public class Level2 : Level
         AddObject(
             "l2_lev1", textures[4],
             new Vector2f(leverX, leverY),
-            new Vector2f(0.1f, 0.1f),
+            new Vector2f(0.1f * scaleX, 0.1f * scaleY),
             "lever"
         );
         AddLink("l2_lev1", "l2_door1"); // Lever triggers Door
@@ -65,7 +70,7 @@ public class Level2 : Level
         AddObject(
             "l2_door1", textures[5],
             new Vector2f(doorX, doorY),
-            new Vector2f(0.24f, 0.26f),
+            new Vector2f(0.24f * scaleX, 0.26f * scaleY),
             "door"
         );
 
@@ -76,7 +81,7 @@ public class Level2 : Level
         AddObject(
             "l2_heart", textures[6],
             new Vector2f(heartX, heartY),
-            new Vector2f(0.2f, 0.2f),
+            new Vector2f(0.2f * scaleX, 0.2f * scaleY),
             "heart"
         );
 
@@ -85,7 +90,7 @@ public class Level2 : Level
             "l2_trpl1",
             textures[8],
             new Vector2f(dimensions.X * 0.45f, dimensions.Y * 0.65f),
-            new Vector2f(0.2f, 0.2f),
+            new Vector2f(0.2f * scaleX, 0.2f * scaleY),
             "trampoline"
         );
 

@@ -26,15 +26,15 @@ public class Level1 : Level
 
         //Platform 2 (Island with box)
         AddPlatform(
-          textures[1],
+          textures[0],
               new Vector2f(dimensions.X * 0.65f, dimensions.Y * 0.75f), //position
-              new Vector2f(0.4f * scaleX, 0.1f * scaleY), //scale
+              new Vector2f(0.4f * scaleX, 0.4f * scaleY), //scale
               dimensions.X * 0.65f  // physical hitbox length
         );
 
         //Platform 3 (Island with lever)
         AddPlatform(
-          textures[1],
+          textures[0],
               new Vector2f(0f, dimensions.Y * 0.50f),
               new Vector2f(0.65f * scaleX, 0.5f * scaleY),
               dimensions.X * 0.60f 
@@ -42,7 +42,7 @@ public class Level1 : Level
 
         //Platform 4 (Island with heart)
         AddPlatform(
-          textures[1],
+          textures[0],
             new Vector2f(dimensions.X * 0.20f, dimensions.Y * 0.25f),
             new Vector2f(0.55f * scaleX, 0.5f * scaleY),
             dimensions.X * 0.60f 
