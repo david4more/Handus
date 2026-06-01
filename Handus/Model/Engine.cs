@@ -20,7 +20,7 @@ public class Engine
 
         var texture = new Texture(Utils.FilePrefix + "player.jpg");
         textures.Add("idle1", texture);
-        player = new Player(textures, level.GetSpawnPoint());
+        player = new Player(textures, level.GetSpawnPoint(), window);
 
         ResetPlayerPosition();
 

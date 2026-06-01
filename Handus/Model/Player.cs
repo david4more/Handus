@@ -8,7 +8,7 @@ public class Player
     private Sprite Sprite;
     private Dictionary<string, Texture> Textures;
     private IntRect Hitbox;
-    private const float Scale = 0.2f;
+    private float Scale;
     private const float Gravity = 1000.0f;
     private const float JumpSpeed = 1000.0f;
     private const float JumpSpeedMultiplier = 2.5f;
@@ -64,13 +64,15 @@ public class Player
         IsOnGround = false;
     }
 
-    public Player(Dictionary<string, Texture> textures, Vector2f spawnPoint)    // initializes player with a map of textures
+    public Player(Dictionary<string, Texture> textures, Vector2f spawnPoint, RenderWindow window)    // initializes player with a map of textures
     {
         this.Textures = textures;
         Sprite = new Sprite(textures["idle1"]);
-        Sprite.Scale = new Vector2f(Scale, Scale);
-        Hitbox.Size = new Vector2i((int)(Sprite.TextureRect.Size.X * Scale), (int)(Sprite.TextureRect.Size.Y * Scale));
-        
+        float scaleX = window.Size.X / 2560f;
+        float scaleY = window.Size.Y / 1440f;
+        Scale = MathF.Min(scaleX, scaleY);
+        Sprite.Scale = new Vector2f(0.2f * Scale, 0.2f * Scale);
+        Hitbox.Size = new Vector2i((int)(Sprite.GetGlobalBounds().Width), (int)(Sprite.GetGlobalBounds().Height));
         SetMiddleBottom(spawnPoint);
     }
 
