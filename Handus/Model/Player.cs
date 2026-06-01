@@ -9,17 +9,14 @@ public class Player
     private Dictionary<string, Texture> Textures;
     private IntRect Hitbox;
     private const float Scale = 0.2f;
-    private const float Speed = 150.0f;
-    private const float Dumping = 10.0f;
-    private const float MaxSpeed = 300.0f;
-    private const float MaxDumpingCoeff = 0.995f;
     private const float Gravity = 1000.0f;
-    private const float JumpSpeed = 800.0f;
-    private const float JumpSpeedMultiplier = 2.0f;
-    private const float BumpingDumpingCoeff = 0.25f;
+    private const float JumpSpeed = 1000.0f;
+    private const float JumpSpeedMultiplier = 2.5f;
+    private const float BumpingDumpingCoeff = 0.9f;
 
     private Vector2f Velocity;
     private bool IsOnGround = false;
+    private float knockbackTimer = 0f;
 
     public void OnKeyPressed(object? sender, KeyEventArgs e)
     {
@@ -31,34 +28,42 @@ public class Player
         }
     }
 
+    public void ApplyBounce(float force)
+    {
+        Velocity.Y = force; // repulsive force
+    }
+
+    private float Lerp(float a, float b, float t) => a + (b - a) * t;
+
     public void Update(float dt)
     {
-        if (!IsOnGround)
-        {
-            Velocity.Y += Gravity * dt;
-            Move(Velocity * dt);
-            return;
-        }
-        
         float move = 0f;
-        
-        if (Velocity.X > MaxSpeed || Velocity.X < -MaxSpeed) 
-            Velocity.X *= MaxDumpingCoeff;
+
+        if (knockbackTimer > 0)
+        {
+            knockbackTimer -= dt;
+            // During the rebound, the speed is smoothly slowed down by the air
+            Velocity.X = Lerp(Velocity.X, 0f, 4f * dt);
+        }
         else
         {
-            if (Keyboard.IsKeyPressed(Keyboard.Key.A)) move -= 1;
-            if (Keyboard.IsKeyPressed(Keyboard.Key.D)) move += 1;
-                    
-            if (move != 0)
-                Velocity.X += move * Speed * dt;
-            if (move == 0 || (move < 0 != Velocity.X < 0)) Velocity.X -= Velocity.X * Dumping * dt;
+            if (Keyboard.IsKeyPressed(Keyboard.Key.A))move -= 1f;
+            if (Keyboard.IsKeyPressed(Keyboard.Key.D)) move += 1f;
+
+            float targetSpeed = move * 370f;
+            float acceleration = 10f;
+
+            Velocity.X = Lerp(Velocity.X, targetSpeed, acceleration * dt);
         }
-            
+
+        if (!IsOnGround)
+            Velocity.Y += Gravity * dt;
+
         Move(Velocity * dt);
 
         IsOnGround = false;
     }
-    
+
     public Player(Dictionary<string, Texture> textures, Vector2f spawnPoint)    // initializes player with a map of textures
     {
         this.Textures = textures;
@@ -88,12 +93,14 @@ public class Player
                 Velocity.Y *= -BumpingDumpingCoeff;
                 break;
             case Direction.Left:
-                Move(new Vector2f(penetration, 0));
-                Velocity.X *= -BumpingDumpingCoeff;
+                Move(new Vector2f(penetration + 1f, 0));
+                Velocity.X = 550f;
+                knockbackTimer = 0.8f;
                 break;
             case Direction.Right:
-                Move(new Vector2f(-penetration, 0));
-                Velocity.X *= -BumpingDumpingCoeff;
+                Move(new Vector2f(-penetration - 1f, 0));
+                Velocity.X = -550f;
+                knockbackTimer = 0.8f;
                 break;
         }
     }
@@ -103,12 +110,19 @@ public class Player
         Sprite.Position += direction;
         Hitbox.Position = (Vector2i)Sprite.Position;
     }
+
     void SetMiddleBottom(Vector2f position) // sets player's middle bottom to passed coords
     {
         var size = Hitbox.Size;
         Sprite.Position = new Vector2f(position.X - size.X / 2.0f, position.Y - size.Y - 5);
         Hitbox.Position = (Vector2i)Sprite.Position;
     }
+
+    public void ResetVelocity()
+    {
+        Velocity = new Vector2f(0, 0);
+    }
+
     public Sprite GetSprite() => Sprite;
     public IntRect GetHitbox() => Hitbox;
     public float PositionX
