@@ -28,7 +28,7 @@ public class Level1 : Level
         AddPlatform(
           textures[0],
               new Vector2f(dimensions.X * 0.65f, dimensions.Y * 0.75f), //position
-              new Vector2f(0.4f * scaleX, 0.4f * scaleY), //scale
+              new Vector2f(scaleValue * scaleX, scaleValue * scaleY), //scale
               dimensions.X * 0.65f  // physical hitbox length
         );
 
@@ -36,7 +36,7 @@ public class Level1 : Level
         AddPlatform(
           textures[0],
               new Vector2f(0f, dimensions.Y * 0.50f),
-              new Vector2f(0.65f * scaleX, 0.5f * scaleY),
+              new Vector2f(scaleValue * scaleX, scaleValue * scaleY),
               dimensions.X * 0.60f 
         );
 
@@ -44,49 +44,50 @@ public class Level1 : Level
         AddPlatform(
           textures[0],
             new Vector2f(dimensions.X * 0.20f, dimensions.Y * 0.25f),
-            new Vector2f(0.55f * scaleX, 0.5f * scaleY),
+            new Vector2f(scaleValue * scaleX, scaleValue * scaleY),
             dimensions.X * 0.60f 
-        );
-
-        // Box 
-        AddObject(
-            "l1_box1", textures[2],
-            new Vector2f(dimensions.X * 0.8f, dimensions.Y * 0.69f),
-            new Vector2f(0.1f * scaleX, 0.1f * scaleY),
-            "box"
         );
 
         // Button
         AddObject(
              "l1_btn1", textures[3],
-            new Vector2f(dimensions.X * 0.35f, dimensions.Y - 135),
-            new Vector2f(0.15f * scaleX, 0.15f * scaleY),
+            new Vector2f(dimensions.X * 0.35f, dimensions.Y * 0.948f),
+            new Vector2f(scaleValue * scaleX, scaleValue * scaleY),
             "button"
         );
         AddLink("l1_btn1", "l1_lev1"); // Button triggers Lever
 
+        // Box 
+        AddObject(
+            "l1_box1", textures[2],
+            new Vector2f(dimensions.X * 0.8f, dimensions.Y * 0.69f),
+            new Vector2f(scaleValue * scaleX, scaleValue * scaleY),
+            "box"
+        );
+
+
         // Lever
         AddObject(
-             "l1_lev1", textures[4],
-            new Vector2f(dimensions.X * 0.52f, dimensions.Y * 0.44f),
-            new Vector2f(0.1f * scaleX, 0.1f * scaleY),
-            "lever"
-        );
+              "l1_lev1", textures[4],
+             new Vector2f(dimensions.X * 0.52f, dimensions.Y * 0.428f),
+             new Vector2f(scaleValue * scaleX, scaleValue * scaleY),
+             "lever"
+         );
         AddLink("l1_lev1", "l1_door1"); // Lever triggers Door
 
-        // Door
+        //Door
         AddObject(
             "l1_door1", textures[5],
-            new Vector2f(dimensions.X * 0.36f, dimensions.Y * 0.338f),
-            new Vector2f(0.24f * scaleX, 0.26f * scaleY),
+            new Vector2f(dimensions.X * 0.36f, dimensions.Y * 0.28f),
+            new Vector2f(scaleValue * scaleX, scaleValue * scaleY),
             "door"
         );
 
         // Heart
         AddObject(
             "l1_heart", textures[6],
-            new Vector2f(dimensions.X * 0.60f, dimensions.Y * 0.15f),
-            new Vector2f(0.2f * scaleX, 0.2f * scaleY),
+            new Vector2f(dimensions.X * 0.60f, dimensions.Y * 0.10f),
+            new Vector2f(4.5f * scaleX, 4.5f * scaleY),
             "heart"
         );
 

@@ -22,32 +22,62 @@ public abstract class Level // abstract class for all levels
         this.dimensions = dimensions;
 
         // Platform textures lvl1
-        //Ground
+
         textures.Add(new Texture(Utils.FilePrefix + "Sprite-poll.png", 
-            new IntRect(new Vector2i(0, 13), new Vector2i(35, 32)))); // idx 0
-        // Island
-        textures.Add(new Texture(Utils.FilePrefix + "Island.png"));// idx 1
+            new IntRect(new Vector2i(0, 13), new Vector2i(35, 6)))); // idx 0
+
+        textures.Add(new Texture(Utils.FilePrefix + "Sprite-poll.png",
+            new IntRect(new Vector2i(0, 13), new Vector2i(35, 6))));  // idx 1
 
         // Objects textures lvl1
-        textures.Add(new Texture(Utils.FilePrefix + "box.png"));     // idx 2
-        textures.Add(new Texture(Utils.FilePrefix + "button.png"));  // idx 3
-        textures.Add(new Texture(Utils.FilePrefix + "lever.png"));   // idx 4
-        textures.Add(new Texture(Utils.FilePrefix + "door.png"));    // idx 5
-        textures.Add(new Texture(Utils.FilePrefix + "heart.png"));   // idx 6
-        textures.Add(new Texture(Utils.FilePrefix + "killzone.png")); // idx 7
-        textures.Add(new Texture(Utils.FilePrefix + "trampoline.png")); // idx 8
+        textures.Add(new Texture(Utils.FilePrefix + "Sprite-Boxt.png",// idx 2
+            new IntRect(new Vector2i(12, 27), new Vector2i(8, 8))));
 
-        // Platform textures lvl2
-        // Island
-        
+        textures.Add(new Texture(Utils.FilePrefix + "Sprite-Playbutton.png",// idx 3
+            new IntRect(new Vector2i(0, 0), new Vector2i(10, 3))));
+
+        textures.Add(new Texture(Utils.FilePrefix + "Sprite-Ruchag.png",// idx 4
+            new IntRect(new Vector2i(14, 8), new Vector2i(14, 11))));
+
+        textures.Add(new Texture(Utils.FilePrefix + "doorlv1.png",// idx 5
+            new IntRect(new Vector2i(0, 0), new Vector2i(3, 35))));
+
+        textures.Add(new Texture(Utils.FilePrefix + "Sprite-hart.png",// idx 6
+              new IntRect(new Vector2i(2, 2), new Vector2i(31, 27))));
+
+        textures.Add(new Texture(Utils.FilePrefix + "Sprite-KillPikk.png",// idx 7
+           new IntRect(new Vector2i(49, 9), new Vector2i(31, 23))));
+        //lvl 2 trampoline
+        textures.Add(new Texture(Utils.FilePrefix + "Sprite-battyt.png",// idx 8
+           new IntRect(new Vector2i(50, 9), new Vector2i(33, 5))));
+
+        // Platform textures lvl2d
+        textures.Add(new Texture(Utils.FilePrefix + "Sprite-poll.png",
+            new IntRect(new Vector2i(47, 13), new Vector2i(35, 6))));
         // Objects textures lvl2
 
         // Platform textures lvl3
-        //Ground
+
         textures.Add(new Texture(Utils.FilePrefix + "Sprite-poll.png",
-            new IntRect(new Vector2i(96, 13), new Vector2i(35, 32))));// idx ?
-        // Island
+            new IntRect(new Vector2i(96, 13), new Vector2i(35, 6))));// idx 10
+
         // Objects textures lvl3
+        textures.Add(new Texture(Utils.FilePrefix + "Sprite-Boxt.png",// idx 11
+           new IntRect(new Vector2i(84, 27), new Vector2i(8, 8))));
+
+        textures.Add(new Texture(Utils.FilePrefix + "Sprite-Playbutton.png",// idx 12
+            new IntRect(new Vector2i(10, 0), new Vector2i(10, 3))));
+
+        //lv2 door
+        textures.Add(new Texture(Utils.FilePrefix + "Sprite-door.png",// idx 13
+            new IntRect(new Vector2i(19, 0), new Vector2i(3, 35))));
+        //lv3 door
+        textures.Add(new Texture(Utils.FilePrefix + "Sprite-door.png",// idx 14
+            new IntRect(new Vector2i(35, 0), new Vector2i(3, 35))));
+
+        textures.Add(new Texture(Utils.FilePrefix + "Sprite-KillPikk.png",// idx 15
+           new IntRect(new Vector2i(97, 9), new Vector2i(31, 23))));
+
     }
 
     public List<Sprite> GetSprites() => sprites;

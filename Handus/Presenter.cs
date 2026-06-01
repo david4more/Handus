@@ -11,7 +11,9 @@ namespace Handus
         private enum AppState { Menu, Game }
         private AppState state = AppState.Menu;
 
-        private RenderWindow window = new RenderWindow(new VideoMode(new Vector2u(1920, 1080)),
+        private static VideoMode desktopMode = VideoMode.DesktopMode;
+        private RenderWindow window = new RenderWindow(
+            desktopMode,
             "Handus",
             Styles.Default,
             State.Fullscreen);
