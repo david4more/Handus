@@ -7,6 +7,8 @@ public class Engine
 {
     private RenderWindow window;
     public Player player;
+    private int currentLevel = 1;
+    private bool levelCompleted = false;
     public Level level { get; private set; }
     private Dictionary<string, Texture> textures = new();
 
@@ -14,48 +16,247 @@ public class Engine
     {
         this.window = window;
 
-        level = new Level1(window.Size);
-        
+        LoadLevel(currentLevel);
+
         var texture = new Texture(Utils.FilePrefix + "player.jpg");
         textures.Add("idle1", texture);
         player = new Player(textures, level.GetSpawnPoint());
-        
+
+        ResetPlayerPosition();
+
         window.SetKeyRepeatEnabled(false);
-        
         window.Closed += (sender, e) => window.Close();
         window.KeyPressed += player.OnKeyPressed;
-        window.KeyPressed += (sender, e) => { if (e.Code == Keyboard.Key.Escape) window.Close(); };
+        window.KeyPressed += (sender, e) => 
+        { if (e.Code == Keyboard.Key.Escape) window.Close(); };
+
     }
-    
+
+    void LoadLevel(int levelNumber)
+    {
+        switch (levelNumber)
+        {
+            case 1:
+                level = new Level1(window.Size);
+                break;
+
+            case 2:
+                level = new Level2(window.Size);
+                break;
+                
+            case 3:
+                level = new Level3(window.Size);
+                break;
+
+            default: 
+                level = new Level1(window.Size); 
+                break;
+        }
+    }
+
+    void ResetPlayerPosition()
+    {
+        if (player == null || level == null)
+            return;
+
+        Vector2f spawn = level.GetSpawnPoint();
+        float w = player.GetHitbox().Width;
+        float h = player.GetHitbox().Height;
+
+        player.PositionX = spawn.X - w / 2f;
+        player.PositionY = spawn.Y - h - 5f;
+        player.ResetVelocity();
+    }
+
     void Update(float dt)
     {
         window.DispatchEvents();
 
         player.Update(dt);
         level.Update(dt);
+
+        foreach (var obj in level.GetObjects()) obj.Update(dt);
         
         UpdateCollisions();
+
+        UpdateTriggers();
+        UpdateLeverInteraction();
+        UpdateTriggers();
+
+        UpdateLevelCompletion();
+        UpdateDeathZones();
+
+
+        if (levelCompleted)
+        {
+            currentLevel++;
+            levelCompleted = false;
+
+            LoadLevel(currentLevel);
+            ResetPlayerPosition();
+        }
+    }
+
+    void UpdateLevelCompletion()
+    {
+        var p = player.GetHitbox();
+
+        foreach (var heart in level.GetObjects().Where(o => o.Type == "heart"))
+        {
+            if (LevelObjects.Intersects(p, heart.Hitbox_obj))
+            {
+                levelCompleted = true;
+                return;
+            }
+        }
+    }
+
+    void UpdateDeathZones()
+    {
+        var p = player.GetHitbox();
+
+        foreach (var obj in level.GetObjects())
+        {
+            if (obj.Type != "killzone")
+                continue;
+
+            if (LevelObjects.Intersects(p, obj.Hitbox_obj))
+            {
+                KillPlayer();
+                return;
+            }
+        }
+
+        if (player.PositionY > window.Size.Y + 200)
+            KillPlayer();
+    }
+    void KillPlayer()
+    {
+        LoadLevel(currentLevel);
+        ResetPlayerPosition();
+    }
+
+    // Вutton-lever-door connection algorithm
+    void UpdateTriggers()
+    {
+        var objects = level.GetObjects();
+        var links = level.GetLinks();
+
+        // Button trigger on the box
+        foreach (var btn in objects.Where(o => o.Type == "button"))
+        {
+            btn.IsActive = objects
+                .Where(o => o.Type == "box")
+                .Any(b => LevelObjects.Intersects(btn.Hitbox_obj, b.Hitbox_obj));
+        }
+
+        // Lever trigger on the button
+        foreach (var lever in objects.Where(o => o.Type == "lever"))
+        {
+            var linkedButtons = links
+               .Where(l => l.ReceiverId == lever.Id)
+               .Select(l => objects.FirstOrDefault(o => o.Id == l.ActivatorId))
+               .Where(o => o != null && o.Type == "button")
+               .ToList();
+
+            if (linkedButtons.Count == 0)
+                lever.IsEnabled = true;
+            else
+                lever.IsEnabled = linkedButtons.All(b => b!.IsActive);
+        }
+
+        // Door trigger on the lever
+        foreach (var door in objects.Where(o => o.Type == "door"))
+        {
+            var linkedLevers = links
+               .Where(l => l.ReceiverId == door.Id)
+               .Select(l => objects.FirstOrDefault(o => o.Id == l.ActivatorId))
+               .Where(o => o != null && o.Type == "lever")
+               .ToList();
+
+            bool shouldOpen = linkedLevers.Count > 0 &&
+                  linkedLevers.All(l => l!.IsActive);
+
+            door.IsActive = shouldOpen;
+
+            if (shouldOpen)
+                door.IsOpening = true;
+        }
+    }
+
+    void UpdateLeverInteraction()
+    {
+        if (!Keyboard.IsKeyPressed(Keyboard.Key.E))
+            return;
+
+        var p = player.GetHitbox();
+
+        foreach (var lever in level.GetObjects().Where(o => o.Type == "lever"))
+        {
+            if (!lever.IsEnabled)
+                continue;
+
+            if (LevelObjects.Intersects(p, lever.Hitbox_obj))
+            {
+                if (!lever.IsActive)
+                {
+                    lever.IsActive = true;
+                }
+            }
+        }
     }
 
     void UpdateCollisions()
     {
         var hitboxes = level.GetHitboxes();
+
+        PlayerVsLevel(hitboxes);
+        PlayerVsBoxes();
+        BoxesVsLevelAndDoors(hitboxes);
+        PlayerVsDoors();
+        PlayerVsTrampolines();
+        LevelBounds();
+    }
+    //Helper for intersection collide methods
+    private static bool TryGetOverlap(IntRect a, IntRect b, 
+                    out float overlapX, out float overlapY)
+    {
+        bool horizontalOverlap =
+            a.Left < b.Left + b.Width &&
+            a.Left + a.Width > b.Left;
+
+        bool verticalOverlap =
+            a.Top < b.Top + b.Height &&
+            a.Top + a.Height > b.Top;
+
+        if (!horizontalOverlap || !verticalOverlap)
+        {
+            overlapX = 0;
+            overlapY = 0;
+            return false;
+        }
+
+        overlapX =
+            Math.Min(a.Left + a.Width, b.Left + b.Width) -
+            Math.Max(a.Left, b.Left);
+
+        overlapY =
+            Math.Min(a.Top + a.Height, b.Top + b.Height) -
+            Math.Max(a.Top, b.Top);
+
+        return true;
+    }
+
+    //Player collision with platforms
+    private void PlayerVsLevel(List<IntRect> hitboxes)
+    {
         var p = player.GetHitbox();
 
         foreach (var h in hitboxes)
         {
-            // first check if the rectangles overlap at all
-            bool horizontalOverlap = p.Left < h.Left + h.Width && p.Left + p.Width > h.Left;
-            bool verticalOverlap   = p.Top < h.Top + h.Height && p.Top + p.Height > h.Top;
+            if (!TryGetOverlap(p, h, out float overlapX, out float overlapY))
+                continue;
 
-            if (!horizontalOverlap || !verticalOverlap)
-                continue; // no collision
-
-            // calculate penetration depth
-            float overlapX = Math.Min(p.Left + p.Width, h.Left + h.Width) - Math.Max(p.Left, h.Left);
-            float overlapY = Math.Min(p.Top + p.Height, h.Top + h.Height) - Math.Max(p.Top, h.Top);
-
-            // resolve along the smaller penetration axis
             if (overlapX < overlapY)
             {
                 if (p.Left < h.Left)
@@ -70,14 +271,213 @@ public class Engine
                 else
                     player.Collide(Direction.Up, overlapY);
             }
+
+            p = player.GetHitbox();
         }
+    }
+
+    private void PlayerVsBoxes()
+    {
+        var p = player.GetHitbox();
+
+        foreach (var obj in level.GetObjects().Where(o => o.Type == "box"))
+        {
+            var b = obj.Hitbox_obj;
+
+            if (!TryGetOverlap(p, b, out float overlapX, out float overlapY))
+                continue;
+
+            if (overlapX < overlapY)
+            {
+                float pushForce = 200f;
+
+                if (p.Left < b.Left)
+                {
+                    obj.Velocity.X = pushForce;
+                    player.PositionX -= overlapX * 0.5f;
+                }
+                else
+                {
+                    obj.Velocity.X = -pushForce;
+                    player.PositionX += overlapX * 0.5f;
+                }
+            }
+            else
+            {
+                if (p.Top < b.Top)
+                    player.Collide(Direction.Down, overlapY);
+                else
+                    player.Collide(Direction.Up, overlapY);
+            }
+
+            p = player.GetHitbox();
+        }
+    }
+
+    //Collision of boxes with platforms and doors
+    private void BoxesVsLevelAndDoors(List<IntRect> hitboxes)
+    {
+        var objects = level.GetObjects();
+        var doors = objects.Where(o => o.Type == "door" && !o.IsOpening).ToList();
+
+        foreach (var obj in objects.Where(o => o.Type == "box"))
+        {
+            var b = obj.Hitbox_obj;
+
+            obj.IsOnGround = false;
+
+            foreach (var h in hitboxes)
+            {
+                if (b.Top + b.Height == h.Top ||
+                    b.Top + b.Height == h.Top + 1)
+                {
+                    if (b.Left < h.Left + h.Width &&
+                        b.Left + b.Width > h.Left)
+                    {
+                        obj.IsOnGround = true;
+                    }
+                }
+            }
+
+            // with platforms
+            foreach (var h in hitboxes)
+            {
+                if (!TryGetOverlap(b, h, out float overlapX, out float overlapY))
+                    continue;
+
+                if (overlapX < overlapY)
+                {
+                    if (b.Left < h.Left)
+                        obj.Move(new Vector2f(-overlapX, 0));
+                    else
+                        obj.Move(new Vector2f(overlapX, 0));
+
+                    obj.Velocity.X = 0;
+                }
+                else
+                {
+                    if (b.Top < h.Top)
+                    {
+                        obj.Move(new Vector2f(0, -overlapY));
+                        obj.Velocity.Y = 0;
+                        obj.IsOnGround = true;
+                    }
+                    else
+                    {
+                        obj.Move(new Vector2f(0, overlapY));
+                        obj.Velocity.Y = 0;
+                    }
+                }
+
+                b = obj.Hitbox_obj;
+            }
+
+            // with doors
+            foreach (var door in doors)
+            {
+                b = obj.Hitbox_obj;
+
+                if (!TryGetOverlap(b, door.Hitbox_obj, out float overlapX, out float overlapY))
+                    continue;
+
+                if (overlapX < overlapY)
+                {
+                    if (b.Left < door.Hitbox_obj.Left)
+                        obj.Move(new Vector2f(-overlapX, 0));
+                    else
+                        obj.Move(new Vector2f(overlapX, 0));
+
+                    obj.Velocity.X = 0;
+                }
+                else
+                {
+                    if (b.Top < door.Hitbox_obj.Top)
+                    {
+                        obj.Move(new Vector2f(0, -overlapY));
+                        obj.Velocity.Y = 0;
+                        obj.IsOnGround = true;
+                    }
+                    else
+                    {
+                        obj.Move(new Vector2f(0, overlapY));
+                        obj.Velocity.Y = 0;
+                    }
+                }
+
+                b = obj.Hitbox_obj;
+            }
+        }
+    }
+
+    private void PlayerVsDoors() //Player collision with door
+    {
+        var p = player.GetHitbox();
+
+        foreach (var door in level.GetObjects().Where(o => o.Type == "door"))
+        {
+            if (door.IsOpening)
+                continue;
+
+            if (!TryGetOverlap(p, door.Hitbox_obj, out float overlapX, out float overlapY))
+                continue;
+
+            if (overlapX < overlapY)
+            {
+                if (p.Left < door.Hitbox_obj.Left)
+                    player.Collide(Direction.Right, overlapX);
+                else
+                    player.Collide(Direction.Left, overlapX);
+            }
+            else
+            {
+                if (p.Top < door.Hitbox_obj.Top)
+                    player.Collide(Direction.Down, overlapY);
+                else
+                    player.Collide(Direction.Up, overlapY);
+            }
+
+            p = player.GetHitbox();
+        }
+    }
+
+    private void PlayerVsTrampolines() // Trampoline collision resolution
+    {
+        var p = player.GetHitbox();
+
+        foreach (var tramp in level.GetObjects().Where(o => o.Type == "trampoline"))
+        {
+            if (!TryGetOverlap(p, tramp.Hitbox_obj, out float overlapX, out float overlapY))
+                continue;
+
+            if (overlapY < overlapX && p.Top < tramp.Hitbox_obj.Top)
+            {
+                player.PositionY -= overlapY;
+                player.ApplyBounce(-1200f);
+                p = player.GetHitbox();
+            }
+        }
+    }
+    private void LevelBounds() //Level limits
+    {
+        var p = player.GetHitbox();
+
+        if (p.Left < 0)
+            player.PositionX = 0;
+
+        if (p.Left + p.Width > window.Size.X)
+            player.PositionX = window.Size.X - p.Width;
+
+        if (p.Top < 0)
+            player.PositionY = 0;
     }
 
     void Render()   // draws all sprites
     {
         window.Clear();
         foreach (var s in level.GetSprites()) window.Draw(s);
+        foreach (var obj in level.GetObjects()) window.Draw(obj.Sprite_obj);
         window.Draw(player.GetSprite());
+
         window.Display();
     }
     
