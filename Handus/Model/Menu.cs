@@ -42,6 +42,7 @@ namespace Handus.Model
         
         public Button confirmButton = new(filePrefix + "Sprite-confirmButton.png", 1050f, 475f, NormalButtonRect, PressedButtonRect);
 
+        public Action<User> OnLoginSuccess;
         public Menu() 
         {
             userService = new UserService();
@@ -92,32 +93,6 @@ namespace Handus.Model
                 window.Draw(repeatPasswordLabel);
             }
         }
-        public void StartGame(User user)
-        {
-            RenderWindow newWindow = new RenderWindow(
-                new VideoMode(new Vector2u(1920, 1080)),
-                "Handus",
-                Styles.Default,
-                State.Fullscreen);
-
-            Engine engine = new(newWindow);
-
-            if (user.PositionX == 0 && user.PositionY == 0)
-            {
-                engine.player.PositionX = engine.level.spawnPoint.X;
-                engine.player.PositionY = engine.level.spawnPoint.Y;
-            }
-            else
-            {
-                engine.player.PositionX = user.PositionX;
-                engine.player.PositionY = user.PositionY;
-            }
-
-            engine.Loop();
-
-            user.PositionX = engine.player.PositionX;
-            user.PositionY = engine.player.PositionY;
-        }
         public async void HandleConfirm(EventArgs e, RenderWindow window)
         {
                 if (e is MouseButtonEventArgs)
@@ -139,7 +114,7 @@ namespace Handus.Model
                                         if (user == null)
                                         {
                                             Console.WriteLine("User not found. Try to enter username again.");
-                                            break;
+                                            return;
 
                                         }
                                         password = passwordTextBox.GetText();
@@ -147,6 +122,7 @@ namespace Handus.Model
                                         {
                                             Console.WriteLine("Wrong password.");
                                             user = null;
+                                            return;
                                         }
                                         break;
                                     }
@@ -157,7 +133,7 @@ namespace Handus.Model
                                         if (existingUser != null)
                                         {
                                             Console.WriteLine("User already exists.");
-                                            break;
+                                            return;
                                         }
                                         email = emailTextBox.GetText();
                                         password = passwordTextBox.GetText();
@@ -165,13 +141,14 @@ namespace Handus.Model
                                         if (password != password2)
                                         {
                                             Console.WriteLine("Passwords do not match.");
-                                            break;
+                                            return;
                                         }
                                         user = await userService.CreateUser(username, email, password);
 
                                         if (user == null)
                                         {
                                             Console.WriteLine("Error creating user.");
+                                            return;
                                         }
                                         break;
                                     }
@@ -184,7 +161,7 @@ namespace Handus.Model
                             }
                             Console.WriteLine($"Welcome, {user.Name}!");
 
-                            StartGame(user);
+                            OnLoginSuccess?.Invoke(user);
 
                             await userService.SendPosition(user.PositionX, user.PositionY);
                     }

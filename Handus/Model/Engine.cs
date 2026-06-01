@@ -68,7 +68,7 @@ public class Engine
         player.ResetVelocity();
     }
 
-    void Update(float dt)
+    public void Update(float dt)
     {
         window.DispatchEvents();
 
@@ -471,29 +471,26 @@ public class Engine
             player.PositionY = 0;
     }
 
-    void Render()   // draws all sprites
+    public void Render()   // draws all sprites
     {
-        window.Clear();
         foreach (var s in level.GetSprites()) window.Draw(s);
         foreach (var obj in level.GetObjects()) window.Draw(obj.Sprite_obj);
         window.Draw(player.GetSprite());
-
-        window.Display();
     }
     
-    public void Loop()  // launches the game's loop
-    {
-        var clock = new Clock();
+    //public void Loop()  // launches the game's loop
+    //{
+    //    var clock = new Clock();
         
         
-        while (window.IsOpen)   // TODO: delta time
-        {
-            float dt = clock.Restart().AsSeconds();
+    //    while (window.IsOpen)   // TODO: delta time
+    //    {
+    //        float dt = clock.Restart().AsSeconds();
             
-            Update(dt);
-            Render();
-        }
-    }
+    //        Update(dt);
+    //        Render();
+    //    }
+    //}
 }
 
 public class Utils
