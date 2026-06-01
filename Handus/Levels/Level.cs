@@ -1,6 +1,7 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using System.Buffers.Text;
+using System.Drawing;
 namespace Handus;
 
 public abstract class Level // abstract class for all levels
@@ -14,14 +15,15 @@ public abstract class Level // abstract class for all levels
     protected Sprite background;
     public Vector2f spawnPoint { get; protected set; }
     protected Vector2u dimensions;
-    //protected LevelSettings settings;
+
 
     public Level(Vector2u dimensions)
     {
         this.dimensions = dimensions;
 
         // Platform textures
-        textures.Add(new Texture(Utils.FilePrefix + "ground.png")); // idx 0
+        textures.Add(new Texture(Utils.FilePrefix + "Sprite-poll.png", 
+            new IntRect(new Vector2i(0, 0), new Vector2i(35, 32)))); // idx 0
         textures.Add(new Texture(Utils.FilePrefix + "Island.png")); // idx 1
         // Objects textures 
         textures.Add(new Texture(Utils.FilePrefix + "box.png"));     // idx 2
@@ -49,14 +51,15 @@ public abstract class Level // abstract class for all levels
         hitboxes.Add(hitbox);
     }
 
-    protected void AddPlatform( Texture texture, Vector2f startPos,
-                                Vector2f scale, float totalWidth)
+    protected void AddPlatform(Texture texture, Vector2f startPos,
+                             Vector2f scale, float totalWidth)
     {
 
         float tileWidth = texture.Size.X * scale.X;
         int length = (int)Math.Ceiling(totalWidth / tileWidth);
 
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < length; i++)
+        {
 
             var s = new Sprite(texture);
             s.Scale = scale;
@@ -86,7 +89,7 @@ public abstract class Level // abstract class for all levels
     }
 
     protected void AddKillzone(string id, Texture texture, Vector2f startPos,
-                                Vector2f scale, float totalWidth) 
+                                Vector2f scale, float totalWidth)
     {
         float tileWidth = texture.Size.X * scale.X;
         int length = (int)Math.Ceiling(totalWidth / tileWidth);
@@ -108,6 +111,7 @@ public abstract class Level // abstract class for all levels
             );
         }
     }
+
 
     protected void AddLink(string from, string to)
     {
