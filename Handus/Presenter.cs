@@ -1,88 +1,38 @@
-﻿namespace Handus
+﻿using System.Numerics;
+using Handus.Model;
+using Handus.View;
+using SFML.Graphics;
+using SFML.System;
+using SFML.Window;
+namespace Handus
 {
     internal class Presenter
     {
-        private readonly IGameView view;
-        private readonly UserService userService;
-        private enum Mode {Login, Register};
+        RenderWindow window = new RenderWindow(new VideoMode(new Vector2u(1920, 1080)),
+            "Handus",
+            Styles.Default,
+            State.Fullscreen);
+        Menu menu = new Menu();
 
-        public Presenter(IGameView view)
+        public Presenter()
         {
-            this.view = view;
-            userService = new UserService();
+            window.TextEntered += (sender, e) => { menu.HandleEvent(e, window); };
+            window.MouseButtonPressed += (sender, e) => { menu.HandleEvent(e, window); };
+            window.Closed += (sender, e) => window.Close();
+            window.KeyPressed += (sender, e) => { if (e.Code == Keyboard.Key.Escape) window.Close(); };
+            menu.SetLabelsPositions();
         }
 
         public async Task Run()
         {
-            User? user = null;
-            string username = null!;
-            string password = null!;
-            string email = null!;
-            while (user == null)
+            while (window.IsOpen)
             {
-                Mode mode = view.MenuChoice() == "1" ? Mode.Login : Mode.Register;
-                switch (mode)
-                {
-                    case Mode.Login:
-                        {
-                            view.ShowMessage("Time to login!");
-                            username = view.GetUsername();
-                            user = await userService.GetUser(username);
-
-                            if (user == null)
-                            {
-                                view.ShowMessage("User not found. Try to enter username again.");
-                                break;
-
-                            }
-                            password = view.GetPassword();
-                            if(user.Password != password)
-                            {
-                                view.ShowMessage("Wrong password.");
-                                user = null;
-                            }
-                            break;
-                        }
-                    case Mode.Register:
-                        {
-                            view.ShowMessage("Time to register!");
-                            username = view.GetUsername();
-                            User? existingUser = await userService.GetUser(username);
-                            if(existingUser != null)
-                            {
-                                view.ShowMessage("User already exists.");
-                                break;
-                            }
-                            email = view.GetEmail();
-                            password = view.GetPassword();
-                            string password2 = view.GetSecondPassword();
-                            if(password != password2)
-                            {
-                                view.ShowMessage("Passwords do not match.");
-                                break;
-                            }
-                            user = await userService.CreateUser(username, email, password);
-
-                            if (user == null)
-                            {
-                                view.ShowMessage("Error creating user.");
-                            }
-                            break;
-                        }
-                }
+                window.DispatchEvents();
+                menu.Update(window);
+                window.Clear();
+                menu.Draw(window);
+                window.Display();
             }
-
-            bool loggedIn = await userService.Login(user.Name);
-            if (!loggedIn)
-            {
-                view.ShowMessage("Login failed!");
-                return;
-            }
-            view.ShowMessage($"Welcome, {user.Name}!");
-
-            view.StartGame(user);
-
-            await userService.SendPosition(user.PositionX, user.PositionY);
         }
     }
 }
