@@ -6,21 +6,26 @@ public class Level3 : Level
 
     public Level3(Vector2u dimensions) : base(dimensions)   // initializes level with textures and sprites
     {
-        float scaleValue = 0.5f;
+        float scaleValue = 9.5f;
         var width = (float)textures[0].Size.X;
         Vector2f tilescale = new Vector2f(scaleValue, scaleValue);
         float tileWidth = textures[0].Size.X * tilescale.X;
         int tilesCount = (int)Math.Ceiling(dimensions.X / tileWidth);
         Vector2f groundScale = new Vector2f(0.5f, 0.5f);
 
+        float baseWidth = 2560f;
+        float baseHeight = 1440f;
+        float scaleX = dimensions.X / baseWidth;
+        float scaleY = dimensions.Y / baseHeight;
+
         //Platform 1 (Ground)
-        AddPlatform(textures[0], new Vector2f(0f, dimensions.Y - 50), tilescale, dimensions.X);
+        AddPlatform(textures[9], new Vector2f(0f, dimensions.Y - 50), tilescale, dimensions.X);
 
         //Platform 2 (left island with green lever)
         AddPlatform(
              textures[1],
              new Vector2f(0f, dimensions.Y * 0.68f),
-             new Vector2f(0.25f, 0.5f), 
+             new Vector2f(0.25f * scaleX, 0.5f * scaleY), 
              dimensions.X * 0.05f
          );
 
@@ -28,7 +33,7 @@ public class Level3 : Level
         AddPlatform(
               textures[1],
               new Vector2f(dimensions.X * 0.38f, dimensions.Y * 0.68f),
-              new Vector2f(0.4f, 0.5f),
+              new Vector2f(0.4f * scaleX, 0.5f * scaleY),
               dimensions.X * 0.33f
         );
 
@@ -36,7 +41,7 @@ public class Level3 : Level
         AddPlatform(
              textures[1],
              new Vector2f(dimensions.X * 0.33f, dimensions.Y * 0.44f),
-             new Vector2f(0.4f, 0.5f),
+             new Vector2f(0.4f * scaleX, 0.5f * scaleY),
              dimensions.X * 0.25f
         );
 
@@ -44,7 +49,7 @@ public class Level3 : Level
         AddPlatform(
             textures[1],
             new Vector2f(dimensions.X * 0.82f, dimensions.Y * 0.36f),
-            new Vector2f(0.4f, 0.5f),
+            new Vector2f(0.4f * scaleX, 0.5f * scaleY),
             dimensions.X * 0.18f
         );
 
@@ -52,7 +57,7 @@ public class Level3 : Level
         AddPlatform(
             textures[1],
             new Vector2f(dimensions.X * 0.9f, dimensions.Y * 0.17f),
-            new Vector2f(0.4f, 0.2f), 
+            new Vector2f(0.4f * scaleX, 0.2f * scaleY), 
             dimensions.X * 0.1f
         );
 
@@ -60,7 +65,7 @@ public class Level3 : Level
         AddKillzone(
             "l3_kz1", textures[7], 
             new Vector2f(dimensions.X * 0.64f, dimensions.Y - 60f),
-            new Vector2f(0.5f, 0.5f),
+            new Vector2f(0.5f * scaleX, 0.5f * scaleY),
             dimensions.X * 0.36f
         );
 
@@ -69,7 +74,7 @@ public class Level3 : Level
         AddObject(
             "l3_box1", textures[2],
             new Vector2f(dimensions.X * 0.57f, box1Y),
-            new Vector2f(0.1f, 0.1f),
+            new Vector2f(0.1f * scaleX, 0.1f * scaleY),
             "box"
         );
 
@@ -78,7 +83,7 @@ public class Level3 : Level
         AddObject(
             "l3_box2", textures[2],
             new Vector2f(dimensions.X * 0.39f, box2Y),
-            new Vector2f(0.1f, 0.1f),
+            new Vector2f(0.1f * scaleX, 0.1f * scaleY),
             "box"
         );
 
@@ -87,7 +92,7 @@ public class Level3 : Level
         AddObject(
             "l3_btn1", textures[3],
             new Vector2f(dimensions.X * 0.40f, btn1Y),
-            new Vector2f(0.15f, 0.15f),
+            new Vector2f(0.15f * scaleX, 0.15f * scaleY),
             "button"
         );
         AddLink("l3_btn1", "l3_lev2"); // Button blue triggers Lever blue
@@ -96,7 +101,7 @@ public class Level3 : Level
         AddObject(
              "l3_btn2", textures[3],
             new Vector2f(dimensions.X * 0.32f, dimensions.Y - 75f),
-            new Vector2f(0.15f, 0.15f),
+            new Vector2f(0.15f * scaleX, 0.15f * scaleY),
             "button"
         );
         AddLink("l3_btn2", "l3_lev1"); // Button green triggers Lever green
@@ -106,7 +111,7 @@ public class Level3 : Level
         AddObject(
             "l3_lev1", textures[4],
             new Vector2f(dimensions.X * 0.04f, lev1Y),
-            new Vector2f(0.1f, 0.1f),
+            new Vector2f(0.1f * scaleX, 0.1f * scaleY),
             "lever"
         );
         AddLink("l3_lev1", "l3_door1"); // Lever green triggers Door green
@@ -116,7 +121,7 @@ public class Level3 : Level
         AddObject(
             "l3_lev2", textures[4],
             new Vector2f(dimensions.X * 0.67f, lev2Y),
-            new Vector2f(0.1f, 0.1f),
+            new Vector2f(0.1f * scaleX, 0.1f * scaleY),
             "lever"
         );
         AddLink("l3_lev2", "l3_door2"); // Lever blue triggers Door blue
@@ -126,7 +131,7 @@ public class Level3 : Level
         AddObject(
             "l3_door1", textures[5],
             new Vector2f(dimensions.X * 0.50f, door1Y), 
-            new Vector2f(0.24f, 0.26f),
+            new Vector2f(0.24f * scaleX, 0.26f * scaleY),
             "door"
         );
 
@@ -135,7 +140,7 @@ public class Level3 : Level
         AddObject(
             "l3_door2", textures[5],
             new Vector2f(dimensions.X * 0.89f, door2Y),
-            new Vector2f(0.24f, 0.26f),
+            new Vector2f(0.24f * scaleX, 0.26f * scaleY),
             "door"
         );
 
@@ -143,7 +148,7 @@ public class Level3 : Level
         AddObject(
             "l3_heart", textures[6],
             new Vector2f(dimensions.X * 0.94f, dimensions.Y * 0.25f),
-            new Vector2f(0.2f, 0.2f),
+            new Vector2f(0.2f * scaleX, 0.2f * scaleY),
             "heart"
         );
 
