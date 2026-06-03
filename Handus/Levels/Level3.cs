@@ -64,7 +64,7 @@ public class Level3 : Level
         );
 
         // Kill zone
-        float kzY = dimensions.Y * 0.935f - (textures[12].Size.Y * 0.15f);
+        float kzY = dimensions.Y * 0.801f - (textures[12].Size.Y * 0.15f);
         AddKillzone(
             "l3_kz1", textures[15], 
             new Vector2f(dimensions.X * 0.64f, kzY),

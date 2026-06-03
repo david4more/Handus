@@ -53,7 +53,7 @@ public abstract class Level // abstract class for all levels
 
         // Platform textures lvl2d
         textures.Add(new Texture(Utils.FilePrefix + "Sprite-poll.png",
-            new IntRect(new Vector2i(47, 13), new Vector2i(35, 6))));
+            new IntRect(new Vector2i(48, 13), new Vector2i(35, 6))));
         // Objects textures lvl2
 
         // Platform textures lvl3
