@@ -18,8 +18,8 @@ public class Engine
 
         LoadLevel(currentLevel);
 
-        var texture = new Texture(Utils.FilePrefix + "Sprite-Player-Walk.png", new IntRect(new Vector2i(8, 16), new Vector2i(19, 20)));
-        var texture2 = new Texture(Utils.FilePrefix + "Sprite-Player-Walk.png", new IntRect(new Vector2i(44, 15), new Vector2i(19, 21)));
+        var texture = new Texture(Utils.FilePrefix + "Sprite-Player-Walk.png", new IntRect(new Vector2i(8, 15), new Vector2i(19, 20)));
+        var texture2 = new Texture(Utils.FilePrefix + "Sprite-Player-Walk.png", new IntRect(new Vector2i(44, 14), new Vector2i(19, 22)));
         var texture3 = new Texture(Utils.FilePrefix + "Sprite-Player-Jump.png", new IntRect(new Vector2i(44, 14), new Vector2i(19, 21)));
         var texture4 = new Texture(Utils.FilePrefix + "Sprite-Player-Jump.png", new IntRect(new Vector2i(80, 13), new Vector2i(19, 20)));
         var texture5 = new Texture(Utils.FilePrefix + "Sprite-Player-Jump.png", new IntRect(new Vector2i(117, 13), new Vector2i(18, 20)));
