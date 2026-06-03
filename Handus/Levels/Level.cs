@@ -77,6 +77,20 @@ public abstract class Level // abstract class for all levels
 
         textures.Add(new Texture(Utils.FilePrefix + "Sprite-KillPikk.png",// idx 15
            new IntRect(new Vector2i(97, 9), new Vector2i(31, 23))));
+        textures.Add(new Texture(Utils.FilePrefix + "Sprite-hart.png",// idx 16
+              new IntRect(new Vector2i(39, 3), new Vector2i(29, 25))));
+        textures.Add(new Texture(Utils.FilePrefix + "Sprite-hart.png",// idx 17
+              new IntRect(new Vector2i(76, 4), new Vector2i(37, 21))));
+        textures.Add(new Texture(Utils.FilePrefix + "Sprite-fon.png",// idx 18
+              new IntRect(new Vector2i(0, 0), new Vector2i(144, 144))));
+        textures.Add(new Texture(Utils.FilePrefix + "Sprite-fon.png",// idx 19
+              new IntRect(new Vector2i(144, 0), new Vector2i(144, 144))));
+        textures.Add(new Texture(Utils.FilePrefix + "Sprite-fon.png",// idx 20
+              new IntRect(new Vector2i(288, 0), new Vector2i(144, 144))));
+        textures.Add(new Texture(Utils.FilePrefix + "Sprite-Ruchag.png",// idx 21
+            new IntRect(new Vector2i(174, 8), new Vector2i(14, 11))));
+        textures.Add(new Texture(Utils.FilePrefix + "Sprite-Ruchag.png",// idx 22
+            new IntRect(new Vector2i(142, 39), new Vector2i(14, 11))));
 
     }
 
@@ -118,6 +132,27 @@ public abstract class Level // abstract class for all levels
             GenerateHitbox(s, scale);
         }
     }
+    protected void AddBackground(Texture texture,
+                         Vector2f scale, float totalWidth)
+    {
+
+        float tileWidth = texture.Size.X * scale.X;
+        int length = (int)Math.Ceiling(totalWidth / tileWidth);
+
+        for (int i = 0; i < length; i++)
+        {
+
+            var s = new Sprite(texture);
+            s.Scale = scale;
+
+            s.Position = new Vector2f(
+                0 + i * tileWidth,
+                0
+            );
+
+            sprites.Add(s);
+        }
+    }
 
     protected void AddObject(string id, Texture texture, Vector2f position,
                               Vector2f scale, string type)
@@ -125,7 +160,7 @@ public abstract class Level // abstract class for all levels
         objects.Add(
             new LevelObjects(
                 id, texture, position,
-                scale, type
+                scale.X, scale.Y, type
             )
         );
 
@@ -151,12 +186,11 @@ public abstract class Level // abstract class for all levels
             objects.Add(
                 new LevelObjects(
                     uniqueId, texture, tilePos,
-                    scale, "killzone"
+                    scale.X, scale.Y, "killzone"
                 )
             );
         }
     }
-
 
     protected void AddLink(string from, string to)
     {

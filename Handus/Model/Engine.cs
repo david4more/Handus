@@ -18,8 +18,27 @@ public class Engine
 
         LoadLevel(currentLevel);
 
-        var texture = new Texture(Utils.FilePrefix + "player.jpg");
-        textures.Add("idle1", texture);
+        var texture = new Texture(Utils.FilePrefix + "Sprite-Player-Walk.png", new IntRect(new Vector2i(8, 16), new Vector2i(19, 20)));
+        var texture2 = new Texture(Utils.FilePrefix + "Sprite-Player-Walk.png", new IntRect(new Vector2i(44, 15), new Vector2i(19, 21)));
+        var texture3 = new Texture(Utils.FilePrefix + "Sprite-Player-Jump.png", new IntRect(new Vector2i(44, 14), new Vector2i(19, 21)));
+        var texture4 = new Texture(Utils.FilePrefix + "Sprite-Player-Jump.png", new IntRect(new Vector2i(80, 13), new Vector2i(19, 20)));
+        var texture5 = new Texture(Utils.FilePrefix + "Sprite-Player-Jump.png", new IntRect(new Vector2i(117, 13), new Vector2i(18, 20)));
+        var texture6 = new Texture(Utils.FilePrefix + "Sprite-Player-Jump.png", new IntRect(new Vector2i(153, 13), new Vector2i(19, 21)));
+        var texture7 = new Texture(Utils.FilePrefix + "Sprite-Player-Jump.png", new IntRect(new Vector2i(189, 14), new Vector2i(18, 21)));
+        var texture8 = new Texture(Utils.FilePrefix + "Sprite-Player-Touch.png", new IntRect(new Vector2i(44, 15), new Vector2i(20, 20)));
+        var texture9 = new Texture(Utils.FilePrefix + "Sprite-Player-Touch.png", new IntRect(new Vector2i(80, 15), new Vector2i(25, 20)));
+        textures.Add("idle", texture);
+        textures.Add("run1", texture);
+        textures.Add("run2", texture2);
+        textures.Add("jump1", texture);
+        textures.Add("jump2", texture3);
+        textures.Add("jump3", texture4);
+        textures.Add("jump4", texture5);
+        textures.Add("jump5", texture6);
+        textures.Add("jump6", texture7);
+        textures.Add("touch1", texture);
+        textures.Add("touch2", texture8);
+        textures.Add("touch3", texture9);
         player = new Player(textures, level.GetSpawnPoint(), window);
 
         ResetPlayerPosition();
@@ -200,7 +219,8 @@ public class Engine
             {
                 if (!lever.IsActive)
                 {
-                    lever.IsActive = true;
+                    player.PlayTouchAnimation();
+                    lever.Activate();
                 }
             }
         }
@@ -462,10 +482,10 @@ public class Engine
         var p = player.GetHitbox();
 
         if (p.Left < 0)
-            player.PositionX = 0;
+            player.PositionX += -p.Left;
 
         if (p.Left + p.Width > window.Size.X)
-            player.PositionX = window.Size.X - p.Width;
+            player.PositionX -= (p.Left + p.Width - window.Size.X);
 
         if (p.Top < 0)
             player.PositionY = 0;

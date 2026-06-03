@@ -20,6 +20,7 @@ public class Level1 : Level
         float scaleX = dimensions.X / baseWidth;
         float scaleY = dimensions.Y / baseHeight;
 
+        AddBackground(textures[18], tilescale, dimensions.X);
         //Platform 1 (Ground)
         AddPlatform(textures[0], new Vector2f(0f, dimensions.Y - 50), tilescale, dimensions.X);
 
@@ -49,9 +50,10 @@ public class Level1 : Level
         );
 
         // Button
+        float btn1Y = dimensions.Y * 0.942f - (textures[12].Size.Y * 0.15f);
         AddObject(
              "l1_btn1", textures[3],
-            new Vector2f(dimensions.X * 0.35f, dimensions.Y * 0.948f),
+            new Vector2f(dimensions.X * 0.35f, btn1Y),
             new Vector2f(scaleValue * scaleX, scaleValue * scaleY),
             "button"
         );
@@ -71,6 +73,7 @@ public class Level1 : Level
               "l1_lev1", textures[4],
              new Vector2f(dimensions.X * 0.52f, dimensions.Y * 0.428f),
              new Vector2f(scaleValue * scaleX, scaleValue * scaleY),
+
              "lever"
          );
         AddLink("l1_lev1", "l1_door1"); // Lever triggers Door

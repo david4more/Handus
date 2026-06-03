@@ -18,6 +18,8 @@ public class Level2 : Level
         float scaleX = dimensions.X / baseWidth;
         float scaleY = dimensions.Y / baseHeight;
 
+        AddBackground(textures[19], tilescale, dimensions.X);
+
         // Platform 1 (Right, down)
         AddPlatform(
           textures[9],
@@ -45,7 +47,7 @@ public class Level2 : Level
         // Kill zone (ground)
         AddKillzone(
             "l2_kz1",
-            textures[15],
+            textures[7],
             new Vector2f(0f, dimensions.Y - 140f),
             new Vector2f(scaleValue * scaleX, scaleValue * scaleY),
             dimensions.X
@@ -56,7 +58,7 @@ public class Level2 : Level
         float leverY = (dimensions.Y * 0.48f) - (textures[4].Size.Y * 0.1f);
 
         AddObject(
-            "l2_lev1", textures[4],
+            "l2_lev1", textures[21],
             new Vector2f(leverX, leverY),
             new Vector2f(scaleValue * scaleX, scaleValue * scaleY),
             "lever"
@@ -91,7 +93,7 @@ public class Level2 : Level
             "trampoline"
         );
 
-        float spawnX = dimensions.X * 0.04f;
+        float spawnX = dimensions.X * 0.08f;
         float spawnY = dimensions.Y * 0.32f;
 
         spawnPoint = new Vector2f(spawnX, spawnY);

@@ -18,20 +18,23 @@ public class LevelObjects
     private const float MaxOpenDistance = 225f;
     private const float Gravity = 1000f;
     public Vector2f Velocity = new Vector2f(0, 0);
+    private Vector2f NormalScale;
+    private Vector2f MirrorScale;
 
-    public LevelObjects(string id_obj,Texture texture_obj, Vector2f position_obj, Vector2f scale_obj, string type_obj)
+    public LevelObjects(string id_obj,Texture texture_obj, Vector2f position_obj, float scale_objX, float scale_objY, string type_obj)
     {
         Id = id_obj;
 
         Sprite_obj = new Sprite(texture_obj);
         Sprite_obj.Position = position_obj;
-        Sprite_obj.Scale = scale_obj;
+        NormalScale = new Vector2f(scale_objX, scale_objY);
+        Sprite_obj.Scale = NormalScale;
 
         var hitbox = new IntRect();
 
         hitbox.Size = new Vector2i(
-            (int)(Sprite_obj.Texture.Size.X * scale_obj.X),
-            (int)(Sprite_obj.Texture.Size.Y * scale_obj.Y)
+            (int)(Sprite_obj.Texture.Size.X * scale_objX),
+            (int)(Sprite_obj.Texture.Size.Y * scale_objY)
         );
 
         Hitbox_obj = hitbox;
@@ -78,6 +81,18 @@ public class LevelObjects
                 openedDistance += moveAmount;
             }
         }
+    }
+
+    public void Activate()
+    {
+        if (IsActive) return;
+        Sprite_obj.TextureRect = new IntRect(new Vector2i(
+        Sprite_obj.TextureRect.Left + Sprite_obj.TextureRect.Width,
+        Sprite_obj.TextureRect.Top), new Vector2i(
+        -Sprite_obj.TextureRect.Width,
+        Sprite_obj.TextureRect.Height)
+    );
+        IsActive = true;
     }
 
     public void Move(Vector2f offset)
